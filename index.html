@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Space Invaders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @font-face {
+        font-family: "Homme"; /* Replace 'YourFontName' with your desired font name. */
+        src: url("./assets/fonts/Homme.ttf") format("truetype"); /* Replace 'your-font-file' with your font's file name. */
+      }
+      @font-face {
+        font-family: "Arcade"; /* Replace 'YourFontName' with your desired font name. */
+        src: url("./assets/fonts/prstart.ttf") format("truetype"); /* Replace 'your-font-file' with your font's file name. */
+      }
+      :root {
+        --primery-color: #231534;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      /* Initial state: hide all accordion content */
+      .accordion-content {
+        display: none;
+      }
+
+      /* Active state: show the accordion content when the 'active' class is present */
+      .accordion-content.active {
+        display: block;
+        margin-top: 12px;
+      }
+      body {
+        background: black;
+        min-width: 100vw;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .btn {
+        position: absolute;
+        color: white;
+        font-family: "Homme";
+      }
+      .arcade-text {
+        font-family: "Arcade";
+      }
+
+      #game-board {
+        background-image: url(/assets/maps/background-blue.png);
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+      .fps-display {
+        color: white;
+      }
+      image {
+        transition: all;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fps-display"></div>
+    <div id="game-board"></div>
+    <script type="module" src="/src/ui/menu.js"></script>
+  </body>
+</html>
