@@ -1,5 +1,4 @@
 import { throttle } from "../../utils/throttle.js";
-import { isElementCollide } from "../../utils/collision.js";
 import Bullets from "../entities/bullets.js";
 
 export class Character {

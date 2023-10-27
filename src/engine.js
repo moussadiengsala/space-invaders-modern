@@ -1,12 +1,9 @@
-// import { Player } from "./gameplay/shared/entities/player.js";
+import { Menu } from "./ui/menu.js";
 import { skyAnimation } from "./ui/skyAnimation.js";
-import { FPSMeasurement } from "./utils/fpsMeasurement.js";
-import { GamePlay } from "./gameplay/gameplay.js";
 
 export class Engine {
-  constructor(gameBoard) {
-    this.gameBoard = gameBoard;
-    this.game = new GamePlay(gameBoard);
+  constructor() {
+    this.menu = new Menu();
     const FPS = 60; // Desired frames per second
     this.UPDATE_RATE = 1000 / FPS; // Time in milliseconds for each frame
     this.lastUpdateTime = Date.now();
@@ -17,20 +14,17 @@ export class Engine {
     const now = Date.now();
     const elapsed = now - this.lastUpdateTime;
     if (elapsed > this.UPDATE_RATE) {
-      this.render();
+      if (!this.menu.isPaused) {
+        this.render();
+      }
       this.lastUpdateTime = now - (elapsed % this.UPDATE_RATE);
     }
     window.requestAnimationFrame(this.gameLoop);
   }
   render() {
-    FPSMeasurement();
-    // Sky animation
-    skyAnimation(this.gameBoard);
-    // Render the entities of the game
-    this.game.player.render();
-    this.game.enemies.forEach((enemy) => {
-      enemy.appearationMove(this.game.enemies)
-      enemy.render()
-    });
+    skyAnimation();
+    this.menu.Start();
   }
 }
+let engine = new Engine();
+engine.gameLoop();

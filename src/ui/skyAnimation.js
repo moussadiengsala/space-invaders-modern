@@ -1,4 +1,6 @@
-export const skyAnimation = (map) => {
+export const skyAnimation = () => {
+  const map = document.getElementById("game-board");
+
   let currentBackgroundPos = map.style.backgroundPosition || "0 0";
   const currentBackgroundPosArray = currentBackgroundPos.split(" ");
   const currentXPos = parseInt(currentBackgroundPosArray[0]);

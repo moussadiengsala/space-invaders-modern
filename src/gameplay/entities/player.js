@@ -1,7 +1,6 @@
 import { Character } from "../shared/character.js";
 
 export class Player extends Character {
-  b
   constructor(ID, size, health, strength, position, spaceFire, directionBullets, gameBoard) {
     const texture =
       "assets/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png";
@@ -36,7 +35,6 @@ export class Player extends Character {
 
     this.position.x = xPercentage;
     this.position.y = bottomPercentage;
-    console.log();
   }
 
   movebyKeyBoard(distance, direction) {
