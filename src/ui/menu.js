@@ -4,35 +4,52 @@ import { skyAnimation } from "./skyAnimation.js";
 const gameBoard = document.getElementById("game-board");
 
 export class Menu {
-  constructor() {
-    this.isGameStarted = false;
-    this.isPaused = false;
+    constructor() {
+        this.isGameStarted = false;
+        this.isPaused = false;
 
-    this.game = new GamePlay();
-    this.menuElement = document.createElement("div");
-    this.PauseMenuElement = document.createElement("div");
-    this.PauseMenuElement.className =
-      "absolute menu-pause bg-black/70 flex gap-6 flex-col justify-center items-center text-white h-screen w-full";
-    this.menuElement.className = "btn testing";
-    this.menuElement.innerHTML = this.MainMenu();
-    document.body.appendChild(this.menuElement);
-    window.addEventListener("keydown", (e) => {
-      if (e.key.toLowerCase() == "p" && this.isGameStarted) {
-        this.isPaused = !this.isPaused;
-        this.isPaused;
-        if (this.isPaused) {
-          this.PauseMenuElement.innerHTML = this.PauseMenu();
-          document.body.appendChild(this.PauseMenuElement);
-        } else {
-          document.querySelector(".menu-pause").remove();
-        }
-      }
-    });
-    this.Navigation();
-    this.backgroundMusic();
-  }
-  MainMenu() {
-    return `<h1 class="md:text-[80px] text-center text-[#86AE94]">Space Invaders 2.0</h1>
+        this.game = new GamePlay();
+        this.menuElement = document.createElement("div");
+        this.PauseMenuElement = document.createElement("div");
+        this.PauseMenuElement.className =
+            "absolute menu-pause bg-black/70 flex gap-6 flex-col justify-center items-center text-white h-screen w-full";
+        this.menuElement.className = "btn testing";
+        this.menuElement.innerHTML = this.MainMenu();
+        document.body.appendChild(this.menuElement);
+        window.addEventListener("keydown", (e) => {
+            if (e.key.toLowerCase() == "p" && this.isGameStarted) {
+                this.isPaused = !this.isPaused;
+                this.isPaused;
+                if (this.isPaused) {
+                    this.PauseMenuElement.innerHTML = this.PauseMenu();
+                    document.body.appendChild(this.PauseMenuElement);
+                } else {
+                    document.querySelector(".menu-pause").remove();
+                }
+            }
+        });
+
+        this.planets = this.menuElement.querySelectorAll(".new-game");
+        this.planets.forEach((planet) => {
+            planet.addEventListener("click", () => {
+                this.game.gameBoard.style.backgroundImage = `url(../../assets/maps/${planet.getAttribute(
+                    "data-map"
+                )}-background.png)`;
+                document.querySelector(".testing")
+                    ? document.body.removeChild(
+                          document.querySelector(".testing")
+                      )
+                    : null;
+                this.isGameStarted = true;
+                console.log("hello world! test");
+                this.game.load();
+            });
+        });
+        this.Navigation();
+        this.backgroundMusic();
+    }
+    MainMenu() {
+        return `<h1 class="md:text-[80px] text-center text-[#86AE94]">Space Invaders 2.0</h1>
       <p class="arcade-text text-[#E3C7E0]  text-center">Defend the planets, Save the Galaxy!</p>
       <div class="flex flex-col w-fit mx-auto p-8 text-center gap-8  justify-center items-center">
       <div class="text-enter arcade-text">
@@ -76,58 +93,47 @@ export class Menu {
          </div>
         </div>
          </div>`;
-  }
-  Navigation() {
-    const accordionTogglers =
-      this.menuElement.querySelectorAll(".accordion-toggler");
-    const accordionContents =
-      this.menuElement.querySelectorAll(".accordion-content");
+    }
+    Navigation() {
+        const accordionTogglers =
+            this.menuElement.querySelectorAll(".accordion-toggler");
+        const accordionContents =
+            this.menuElement.querySelectorAll(".accordion-content");
 
-    accordionTogglers.forEach((toggler, index) => {
-      toggler.addEventListener("click", () => {
-        let clickSound = new Audio("../../assets/audio/click-sound.wav");
-        clickSound.play();
-        accordionContents[index].classList.toggle("active");
+        accordionTogglers.forEach((toggler, index) => {
+            toggler.addEventListener("click", () => {
+                let clickSound = new Audio(
+                    "../../assets/audio/click-sound.wav"
+                );
+                clickSound.play();
+                accordionContents[index].classList.toggle("active");
 
-        accordionContents.forEach((content, i) => {
-          if (i !== index) {
-            content.classList.remove("active");
-          }
+                accordionContents.forEach((content, i) => {
+                    if (i !== index) {
+                        content.classList.remove("active");
+                    }
+                });
+            });
         });
-      });
-    });
-  }
-  Start() {
-    const planets = this.menuElement.querySelectorAll(".new-game");
-    planets.forEach((planet) => {
-      planet.addEventListener("click", () => {
-        this.game.gameBoard.style.backgroundImage = `url(../../assets/maps/${planet.getAttribute(
-          "data-map"
-        )}-background.png)`;
-        document.querySelector(".testing")
-          ? document.body.removeChild(document.querySelector(".testing"))
-          : null;
-        this.isGameStarted = true;
-      });
-      if (this.isGameStarted) {
-        this.game.player.render();
-        this.game.enemies.forEach((enemy) => enemy.appearationMove());
-      }
-    });
-  }
-  PauseMenu() {
-    return `
-    <div class="mb-4 text-xl">Paused</div>
-    <div>Continue</div>
-    <div>Restart</div>
-    <div>Quit</div>
-    `;
-  }
-  backgroundMusic() {
-    let backgroundMusic = new Audio("../../assets/audio/background-music.mp3");
-    backgroundMusic.loop = true;
-    backgroundMusic.autoplay = true;
-    backgroundMusic.volume = 0.5;
-    backgroundMusic.play();
-  }
+    }
+    Start() {
+        if (this.isGameStarted && !this.isPaused) this.game.render();
+    }
+    PauseMenu() {
+        return `
+          <div class="mb-4 text-xl">Paused</div>
+          <div>Continue</div>
+          <div>Restart</div>
+          <div>Quit</div>
+        `;
+    }
+    backgroundMusic() {
+        let backgroundMusic = new Audio(
+            "../../assets/audio/background-music.mp3"
+        );
+        backgroundMusic.loop = true;
+        backgroundMusic.autoplay = true;
+        backgroundMusic.volume = 0.1;
+        backgroundMusic.play();
+    }
 }

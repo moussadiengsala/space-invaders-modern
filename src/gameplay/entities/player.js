@@ -1,11 +1,18 @@
 import { Character } from "../shared/character.js";
 
 export class Player extends Character {
-  constructor(ID, size, health, strength, position, spaceFire, directionBullets, gameBoard) {
-    const texture =
-      "assets/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png";
+  constructor(ID, size, health, strength, position, spaceFire, directionBullets, activeBullets, gameBoard) {
 
-    super(ID, size, health, strength, position, texture, spaceFire, directionBullets, gameBoard);
+    // the texture is now an object where keys represent diffrent state of health and values represent texture on that state of health
+    const texture = {
+      100: "/assets/characters/main-ship-base/PNGs/full-health.png",
+      75: '/assets/characters/main-ship-base/PNGs/slight-damage.png',
+      50: '/assets/characters/main-ship-base/PNGs/damaged.png',
+      25: "/assets/characters/main-ship-base/PNGs/very-damage.png",
+      0: "/assets/characters/main-ship-base/PNGs/very-damage.png"
+    }
+
+    super(ID, size, health, strength, position, texture, spaceFire, directionBullets, activeBullets, gameBoard);
     this.movebymouse = this.movebymouse.bind(this);
     this.movebyKeyBoard = this.movebyKeyBoard.bind(this);
     this.gameBoardRect = this.gameBoard.getBoundingClientRect();
@@ -36,7 +43,6 @@ export class Player extends Character {
     this.position.x = xPercentage;
     this.position.y = bottomPercentage;
   }
-
   movebyKeyBoard(distance, direction) {
     let updatePosition = (coord) => {
       let value = coord;
@@ -54,7 +60,6 @@ export class Player extends Character {
       this.position.y = updatePosition(this.position.y);
     }
   }
-
   moveHandler() {
     window.addEventListener("mousemove", this.movebymouse);
     document.addEventListener("keydown", (event) => {
