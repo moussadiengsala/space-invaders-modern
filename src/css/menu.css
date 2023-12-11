@@ -1,0 +1,181 @@
+.menu-pause button {
+    background: none;
+    
+}
+
+.main-menu-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* absolute menu-pause bg-black/70 flex gap-6 flex-col justify-center items-center text-white h-screen w-full */
+.menu-pause {
+    height: 100vw;
+    width: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    gap: 1.50rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.accordion-toggler{
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.game-menu-button{
+    cursor: pointer;
+}
+
+/*  mb-4 text-xl */
+.paused {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+/* game-over space-y-3 flex flex-col justify-center items-center */
+.game-over {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: .75rem;
+}
+
+/* game-over-title md:text-[80px] homme-text text-center text-[#86AE94] */
+.game-over-title {
+    text-align: center;
+    color: #86AE94;
+}
+
+/* game-over-score */
+.game-over-score {
+    font-size: 2.50rem;
+}
+
+/* game-over-action flex items-center mt-[32px] gap-4 */
+.game-over-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    gap: 1rem;
+}
+
+/* Main menu */
+
+.main-menu {
+    position: absolute;
+    color: white;
+    font-family: "Homme";
+}
+
+/* main-menu-title md:text-[80px] text-center text-[#86AE94] */
+.main-menu-title {
+    text-align: center;
+    color: #86AE94;
+    font-size: 80px;
+}
+
+/* main-menu-arcade-text arcade-text text-[#E3C7E0] text-center */
+.main-menu-arcade-text {
+    color: #E3C7E0;
+    text-align: center;
+}
+
+/* main-menu-container flex flex-col w-fit mx-auto p-8 text-center gap-8  justify-center items-center */
+.main-menu-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+/* main-menu-planets accordion-content text-[12px] space-y-6 */
+.main-menu-planets {
+    font-size: 12px;
+    margin: 0 1.75rem;
+}
+
+/* main-menu-planets-container flex gap-8 */
+.main-menu-planets-container {
+    display: flex;
+    gap: 2rem;
+}
+
+/* main-menu-planet w-[48px] new-game h-[48px] hover:scale-125 cursor-pointer  mt-6 bg-[url(${resources.images.map.icons.lava.src})] */
+.main-menu-planet {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    margin-top: 1.75rem;
+}
+
+.main-menu-planet:hover {
+    transform: scale(1.50);
+    -webkit-transform: scale(1.25);
+    -moz-transform: scale(1.25);
+    -ms-transform: scale(1.25);
+    -o-transform: scale(1.25);
+}
+
+/* main-menu-instruction flex items-center gap-2 */
+.main-menu-instruction {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+/* w-[64px] h-[32px] bg-[url(${resources.images.button.spaceKey.src})] */
+
+.main-menu-instruction div {
+    width: 64px;
+    height: 32px;
+}
+
+.game-menu-button{
+    background: none;
+    border: none;
+    color: white;
+    padding: 4px;
+    font-size: 1rem;
+}
+
+/* ui */
+
+/* header absolute top-0 text-orange-400 w-full p-1 p-8 text-xl */
+.header {
+    position: absolute;
+    top: 0;
+    color: #fb923c;
+    width: 100%;
+    padding: 2rem;
+    font-size: 1.25rem;
+}
+
+/* header-container flex justify-between */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* loading-message text-4xl text-white h-full flex items-center justify-center */
+.loading-message{
+    font-size: 5rem;
+    color: white;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

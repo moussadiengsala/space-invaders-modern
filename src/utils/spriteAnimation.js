@@ -16,25 +16,14 @@ export function spriteAnimation(elementToAnimate, animationState) {
 }
 
 
-// export function spriteAutoAnimation(elementToAnimate, frameSize, frameCount, delay) {
-//     let animation = throttle(() => {
-//         elementToAnimate.style.backgroundPosition = `${newXPos}px 0`;
-//     }, delay)
-
-//     for (let currentFrame = 0; currentFrame < frameCount; currentFrame++) {
-//         let newXPos = -currentFrame * frameSize;
-        
-//         animation()
-//         console.log(newXPos, frameSize)
-//     }
-// }
-
 
 export function spriteAutoAnimation(elementToAnimate, frameSize, frameCount, delay, onAnimationComplete) {
-    function animateFrame(currentFrame) {
+  
+  function animateFrame(currentFrame) {
       let newXPos = -currentFrame * frameSize;
       elementToAnimate.style.backgroundPosition = `${newXPos}px 0`;
-  
+      // explosion sound effect
+
       // Schedule the next frame
       if (currentFrame < frameCount - 1) {
         setTimeout(() => animateFrame(currentFrame + 1), delay); // Adjust the duration (100ms) as needed
@@ -44,9 +33,9 @@ export function spriteAutoAnimation(elementToAnimate, frameSize, frameCount, del
         }
       }
     }
-  
+
     // Start the animation
     animateFrame(0);
   }
-  
+
 

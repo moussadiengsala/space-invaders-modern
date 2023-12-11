@@ -1,90 +1,237 @@
+// Import necessary modules and classes
 import { HUD } from "../ui/HUD.js";
 import { Enemies } from "./entities/enemies.js";
 import { Player } from "./entities/player.js";
 import { generatePositionIn } from "../utils/generatePonsitionIn.js";
 import { throttle } from "../utils/throttle.js";
+import { random } from "../utils/radom.js";
+import { isElementCollide } from "../utils/collision.js";
+import { resources } from "../engine.js";
 
+// Define directions for movement
+const DIRECTIONS = {
+    UP: -1,
+    DOWN: 1,
+};
 
-// This class has a purpose to start a new game
+// This class is designed to manage the gameplay and start a new game
 export class GamePlay {
-  constructor() {
-    this.activeBullets = []
-    this.isGamePaused = false;
-    // init a gameBoard
-    this.gameBoard = document.querySelector("#game-board");
-    // Default position of the player at start of the game
-    this.position = {
-      x: 50 - (100 * 100) / window.innerWidth,
-      y: 0,
-    };
-    // init a new player
-    this.player = new Player(
-      "Player",
-      100,
-      100,
-      30,
-      this.position,
-      1000,
-      1,
-      this.activeBullets,
-      this.gameBoard
-    );
+    constructor() {
+        // Initialize properties for game state
+        this.level = 1;
+        this.score = {score: 0};
+        this.gameBoard = document.querySelector("#game-board");
+        this.position = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight - 200,
+        };
+        // Initialize HUD (Heads-Up Display)
+        HUD();
 
-    HUD();
-    // init a set of enemies
-    this.enemies = [];
+        // bullets
+        this.activeBullets = [];
+        this.poolingBullets = {};
 
-  }
+        // Set the number of enemies and initialize an empty array for enemies
+        this.numberOfEnemies = 1;
+        this.enemies = [];
+        this.poolingEnemies = {}
 
-  load() {
-    this.player.loadTexture()
-    //  make the player movements controlled by keyboard keys
-    this.player.moveHandler();
-    this.loadEnemies();
-  }
-
-  loadEnemies() {
-    // Load the texture of an enemy
-
-    for (let i = 0; i < 1; i++) {
-      let r = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
-      const texture = {
-        100: `assets/characters/enemies/soldier/enemy-${r}/base.png`,
-        0: `assets/characters/enemies/soldier/enemy-${r}/destruction.png`
-      }
-      let { direction, x, y, z } = generatePositionIn(1, i);
-
-      let enemy = new Enemies(
-        "Enemy",
-        100,
-        100,
-        10,
-        { x, y, z },
-        texture,
-        Math.floor(Math.random() * (2000 - 4000 + 1)) + 4000,
-        -1,
-        this.activeBullets,
-        this.gameBoard,
-        direction
-      );
-      enemy.loadTexture()
-      this.enemies.push(enemy);
+        this.isRunning = true;
+        this.countdownTime = 1;
     }
-  }
 
-  render = throttle(() => {
-      this.enemies = this.enemies.filter((enemy) => enemy.isAlive);
-      // console.log(this.enemies)
-      for (let i = 0; i < this?.activeBullets?.length; i++) {
-          let bullet = this.activeBullets[i];
-          bullet.fire(this.activeBullets, i);
-      }
-      
-      this.player.render()
-      this.enemies.forEach((enemy) => {
-          enemy.appearationMove();
-          enemy.render();
-      });
+    // Method to load the game
+    async load() {
+        // Cleanup existing game state
+        await this.cleanup();
 
-  }, 0)
+        // Create a new player instance and load its texture
+        this.player = new Player(
+            "Player",
+            100,
+            100,
+            30,
+            this.position,
+            500,
+            DIRECTIONS.UP,
+            this.activeBullets,
+            this.poolingBullets,
+            this.enemies,
+            this.poolingEnemies,
+            this.score,
+            this.gameBoard
+        );
+        this.player.loadTexture();
+        this.player.moveHandler();
+
+        // Load enemies for the new game
+        this.loadEnemies();
+    }
+
+    // Method to cleanup game state
+    cleanup = async () => {
+        // Clean up player, enemies, bullets, and reset score
+        this.player?.cleanup();
+    
+        // Clean up enemies asynchronously
+        Promise.all(this.enemies.map(async (enemy) => {
+            this.poolingEnemies[enemy.ID] = enemy;
+            enemy.cleanup();
+        }));
+        this.enemies = [];
+    
+        // Clean up bullets asynchronously
+        Promise.all(this.activeBullets.map(async (bullet) => {
+            this.poolingBullets[bullet.ID] = bullet;
+            bullet.cleanup();
+        }));
+        this.activeBullets = [];
+
+        this.score.score = 0;
+        this.level = 1;
+
+        this.countdownTime = 1;
+        this.isRunning = true;
+        this.numberOfEnemies = 1;
+
+        document.querySelector(".level").textContent = this.level;
+        document.querySelector(".score").textContent = this.score.score;
+        document.querySelector(".timer").textContent = "00:00";
+    };
+
+    // Method to load enemies
+    async loadEnemies() {
+        const enemies = Array.from({ length: this.numberOfEnemies }, (_, index) => index)
+        Promise.all(
+            enemies.map(i => {
+                const { ...position } = generatePositionIn(
+                    this.numberOfEnemies,
+                    i
+                );
+    
+                let poolingEnemies = Object.entries(this.poolingEnemies)
+                if (poolingEnemies.length > 0) {
+                    this.reusePooledEnemy(poolingEnemies, position);
+                } else {
+                    this.createNewEnemy(position, i);
+                }
+            })
+        )
+    }
+
+    // Method to render the game
+    render = async () => {
+        this.update();
+
+        // Handle bullet hits for the player
+        this.player.handleBulletHit();
+        this.player.handleScore(this.score.score);
+        this.player.handleWeapon()
+        this.player.render();
+
+        // Render each enemy asynchronously
+        Promise.all(
+            this.enemies.map(async (enemy) => {
+                // enemy.appearationMove();
+                enemy.move(20, 20, 0.1)
+
+                enemy.handleBulletHit()
+                // Handle bullet hits for enemies and update the score
+                enemy.render();
+            })
+        );
+
+        // Iterate through active bullets asynchronously and update their positions
+        Promise.all(
+            this.activeBullets.map((bullet, i) =>
+                {
+                    bullet.fire(this.activeBullets, this.poolingBullets, i)
+                }
+            )
+        );
+
+        this.setUpNewLevel();
+    }
+
+    // If all enemies are defeated, load a new set of enemies
+    async setUpNewLevel() {
+        if (this.enemies.length === 0) {
+            this.level += 1;
+            document.querySelector(".level").textContent = this.level;
+
+            this.player.restortHealth();
+            this.player.actualHealth = 100;
+
+            this.numberOfEnemies += 1;
+            await this.loadEnemies();
+        }
+    }
+
+    // Helper function to reuse a pooled enemy
+    reusePooledEnemy = (poolingEnemies, position) => {
+        const [id, enemy] = poolingEnemies[0];
+        delete this.poolingEnemies[id];
+        
+        // Reset properties of the reused enemy
+        enemy.shipWrapper.style.opacity = 1;
+        enemy.restortHealth();
+        enemy.isAlive = true;
+        enemy.beginMove = false;
+        enemy.activeBullets = this.activeBullets;
+        enemy.poolingBullets = this.poolingBullets;
+        enemy.enemies = this.enemies;
+        enemy.poolingEnemies = this.poolingEnemies;
+        enemy.ship.style.backgroundPosition = '0px 0px';
+        enemy.position = position;
+
+        this.enemies.push(enemy);
+    }
+
+    // Helper function to create a new enemy
+    createNewEnemy = (position, i) => {
+        // Create a new enemy instance
+        const enemy = new Enemies(
+            "Enemy",
+            100,
+            100,
+            10,
+            position,
+            random(1000, 2000),
+            DIRECTIONS.DOWN,
+            this.activeBullets,
+            this.poolingBullets,
+            this.enemies,
+            this.poolingEnemies,
+            this.score,
+            this.gameBoard,
+        );
+        enemy.ID += i;
+
+        // Load enemy texture and add it to the enemies array
+        enemy.loadTexture();
+        this.enemies.push(enemy);
+    }
+
+    // time
+    update = throttle(() => {
+        if (!this.isRunning) return;
+
+        this.countdownTime += 1000;
+        const formattedTime = this.formatTime(this.countdownTime);
+
+        document.querySelector(".timer").textContent = formattedTime;
+    }, 1000);
+
+    formatTime(milliseconds) {
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const seconds = totalSeconds % 60;
+        const minutes = Math.floor(totalSeconds / 60) % 60;
+        const hours = Math.floor(totalSeconds / 3600);
+        return `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
+    }
+
+    pad(value) {
+        return value < 10 ? `0${value}` : value;
+    }
 }

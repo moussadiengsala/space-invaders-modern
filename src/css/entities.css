@@ -1,0 +1,130 @@
+
+
+/* Character */
+
+/* `ship-wrapper absolute w-[${this.size}px] h-[${this.size}px]` */
+.ship-wrapper {
+    position: absolute;
+}
+
+.ship-wrapper-elem {
+    width: 100%;
+    height: 100%;
+}
+
+.ship-wrapper-enemy {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+}
+
+/* exhaust */
+
+/* "absolute left-[50.4%] transform -translate-x-1/2 bg-no-repeat" */
+.exhaust {
+    position: absolute;
+    left: 50%;
+    background-repeat: no-repeat;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+}
+
+/*`exhaust exhaust-engine inset-0 top-1/2 [background-image:url(${resources.images.exhaust.engine.src})]`; */
+.exhaust-engine {
+    top: 50%;
+    bottom: 0;
+    right: 0;
+}
+
+/*`exhaust exhaust-ship w-[48px] h-[48px] bottom-0 [background-image:url(${resources.images.exhaust.exhaust.src})]`; */
+.exhaust-ship {
+    width: 48px;
+    height: 48px;
+    bottom: 0px;
+}
+
+/* `ship-wrapper-ship absolute w-[64px] h-[64px] bg-no-repeat bg-[lenght:64px_64px] ${this.CharacterType == "Player" && "bg-center"} left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 scale-[2] origin-center` */
+.ship-wrapper-ship {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-repeat: no-repeat;
+    /* background-size: 64px 64px; */
+    left: 50%;
+    top: 50%;
+    background-origin: 50% 50%;
+    transform: translate(-50%, -50%) scale(2);
+    -webkit-transform: translate(-50%, -50%) scale(2);
+    -moz-transform: translate(-50%, -50%) scale(2);
+    -ms-transform: translate(-50%, -50%) scale(2);
+    -o-transform: translate(-50%, -50%) scale(2);
+}
+
+.ship-wrapper-player .ship-wrapper-ship {
+    background-position: center;
+}
+
+/* health bar */
+
+/* 'health-bar h-[4px] absolute bottom-0 -left-1/4 border-[1px] border-white/30 w-1/2'; */
+.health-bar {
+    width: 50%;
+    height: 4px;
+    position: absolute;
+    bottom: 0;
+    left: -50%;
+    border: solid 1px rgba(255, 255, 255, 0.3);
+}
+
+/* 'bg-green-500 w-full h-full' */
+.health-bar div {
+    width: 100%;
+    height: 100%;
+    background-color: #22c55e;
+}
+
+/* bullets */
+
+/* bullet absolute w-[32px] h-[32px]` */
+.bullet {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+}
+
+/* `w-full h-full [background-image:url(${this.projectile})] transform rotate-[${this.rotation}] ${this.BulletOwner.includes("Enemy") ? "bullet-enemy":"bullet-player"}` */
+.bullet div{
+    width: 100%;
+    height: 100%;
+}
+
+.bullet-enemy {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+}
+
+/* weapon */
+/* `weapon absolute w-[48px] h-[48px] bg-no-repeat bg-[lenght:48px_48px] [background-image:url(${resources.images.weapon[weapon].src})] left-1/2 transform -translate-x-1/2  origin-center` */
+.weapon {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background-repeat: no-repeat;
+    /* background-size: 48px 48px; */
+    z-index: -1;
+    left: 50%;
+    transform-origin: 50% 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+}

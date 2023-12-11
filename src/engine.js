@@ -1,32 +1,53 @@
 import { Menu } from "./ui/menu.js";
 import { skyAnimation } from "./ui/skyAnimation.js";
-import { FPSMeasurement } from "./utils/fpsMeasurement.js";
+import { ResourceManager } from "./ui/resourceManager.js";
+import { hideLoadingMessage, showLoadingMessage } from "./ui/loadingMessage.js";
+
+export const resources = new ResourceManager();
 
 export class Engine {
     constructor() {
         this.menu = new Menu();
-        const FPS = 60; // Desired frames per second
-        this.UPDATE_RATE = 1000 / FPS; // Time in milliseconds for each frame
-        this.lastUpdateTime = Date.now();
+        this.FPS = 60; // Desired frames per second
+        this.UPDATE_RATE = 1000 / this.FPS; // Time in milliseconds for each frame
+        this.lastUpdateTime = performance.now();
         this.gameLoop = this.gameLoop.bind(this);
+        this.map = document.getElementById("game-board");
     }
 
     gameLoop() {
-        const now = Date.now();
+        const now = performance.now();
         const elapsed = now - this.lastUpdateTime;
         if (elapsed > this.UPDATE_RATE) {
-          FPSMeasurement()
             if (!this.menu.isPaused) {
-                this.render();
+                this.render()
             }
             this.lastUpdateTime = now - (elapsed % this.UPDATE_RATE);
         }
         window.requestAnimationFrame(this.gameLoop);
     }
-    render() {
-        skyAnimation();
-        this.menu.Start();
+
+    async render() {
+        Promise.all([
+            skyAnimation(this.map),
+            this.menu.Start()
+        ]);
     }
 }
-let engine = new Engine();
-engine.gameLoop();
+
+async function initializeResources() {
+    showLoadingMessage(); // Show loading message while resources are loading
+    try {
+        // load all resources needed for the game.
+        await resources.resourceLoader()
+        hideLoadingMessage(); // Hide loading message once resources are loaded
+    
+        // Start the game loop once resources are loaded
+        let engine = new Engine();
+        engine.gameLoop();
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+initializeResources()
