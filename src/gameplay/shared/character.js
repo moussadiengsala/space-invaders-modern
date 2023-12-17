@@ -58,6 +58,8 @@ export class Character {
     this.ship = document.createElement("div");
     this.shipExhausts = document.createElement("div")
 
+    resources.audios.fire.volume = 0.1;
+    
     // Exhaust texture
     this.animationState =  {
       currentFrame: 0,
@@ -200,9 +202,14 @@ export class Character {
     await Promise.all(this.weapon.adjustPosition.map(async (adjustPosition, i) => {
       x += adjustPosition;
 
-      let polling = Object.entries(this.poolingBullets)
-      if (polling.length > 0) {
-        let [id, bullet] = polling.at(0)
+      let [id, bullet] = []
+      for (let bulletID in this.poolingBullets) {
+        [id, bullet] = [bulletID, this.poolingBullets[bulletID]];
+        break
+      }
+
+      // let polling = Object.entries(this.poolingBullets)
+      if (id) {
         delete this.poolingBullets[id]
 
         bullet.bullets.style.opacity = 1
@@ -220,13 +227,12 @@ export class Character {
       }
     }));
 
-    // if (this.CharacterType == "Enemy") console.log(this.activeBullets.filter(b => b.BulletOwner == "Enemy"));
+    resources.audios.fire.play();
   }
 
 
   // Method to perform cleanup when the character is no longer active
   cleanup() {
-    // if (this.gameBoard.contains(this.shipWrapper)) this.gameBoard.removeChild(this.shipWrapper);
     this.shipWrapper.style.opacity = 0;
   }
 }

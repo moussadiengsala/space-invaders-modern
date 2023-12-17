@@ -34,7 +34,7 @@ export class Enemies extends Character {
   
 
   // Method for rollercoaster-like movement of enemies
-  move = throttle(() => {
+  move = throttle(async () => {
     // Calculate offset values based on the size of the enemy
     const offsetX = window.innerWidth - this.size;
     const offsetY = window.innerHeight - 4 * this.size;

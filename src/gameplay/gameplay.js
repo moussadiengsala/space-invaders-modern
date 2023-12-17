@@ -144,7 +144,7 @@ export class GamePlay {
 
         // Iterate through active bullets asynchronously and update their positions
         Promise.all(
-            this.activeBullets.map((bullet, i) =>
+            this.activeBullets.map(async (bullet, i) =>
                 {
                     bullet.fire(this.activeBullets, this.poolingBullets, i)
                 }

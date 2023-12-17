@@ -1,6 +1,5 @@
 import { resources } from "../engine.js";
 import { GamePlay } from "../gameplay/gameplay.js";
-import { socket } from "../server/socketEntrypoint.js";
 import { debounce } from "../utils/debounce.js";
 
 const gameBoard = document.getElementById("game-board");
@@ -26,7 +25,7 @@ export class Menu {
     }
 
     handlePlanet() {
-        this.planets = this.menuElement.querySelector(".main-menu-planet");
+        this.planets = this.menuElement.querySelectorAll(".main-menu-planet");
         const handleClick = (event) => {
             const planet = event.target;
             const map = planet.getAttribute("data-map");
@@ -38,9 +37,9 @@ export class Menu {
             this.game.load();
         };
     
-        // this.planets.forEach((planet) => {
-            this.planets.addEventListener("click", handleClick);
-        // });
+        this.planets.forEach((planet) => {
+            planet.addEventListener("click", handleClick);
+        });
     }
     
 
@@ -59,6 +58,7 @@ export class Menu {
             }
         }
     };
+
     MainMenu() {
         return ` 
         <h1 class="main-menu-title">Space Invaders 2.0</h1>
@@ -169,14 +169,15 @@ export class Menu {
 
         this.game.player.removeMoveHandler()
         return `
-        <div class='game-over'>
-            <h1 class="game-over-title homme-text">Game Over</h1>
-            <div class='game-over-score'>Your score : ${document.querySelector('.score').textContent}</div>
-            <div class='game-over-action'>
-                <button data-action="restart" class='game-menu-button arcade-text'>Restart</button>
-                <button data-action="quit" class='game-menu-button arcade-text'>Quit</button>
+            <div class='game-over'>
+                <h1 class="game-over-title homme-text">Game Over</h1>
+                <div class='game-over-score'>Your score : ${document.querySelector('.score').textContent}</div>
+                <div class='game-over-action'>
+                    <button data-action="restart" class='game-menu-button arcade-text'>Restart</button>
+                    <button data-action="quit" class='game-menu-button arcade-text'>Quit</button>
+                </div>
             </div>
-        </div>`
+        `
     }
 
     backgroundMusic() {
