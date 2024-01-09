@@ -57,14 +57,14 @@ class Bullets {
     // If bullets are out of the board, clean up and remove them from the array
     if (!isOutOfBoard) {
       // Update the vertical position of bullets
-      this.position.y += 20 * this.direction;
+      this.position.y += 8 * this.direction;
       this.bullets.style.transform = `translate(${this.position.x}px,${this.position.y}px)`;
     } else {
       this.cleanup()
       poolingBullets[activeBullets[index].ID] = activeBullets[index]
       activeBullets.splice(index, 1);
     } 
-  }, 35)
+  }, 0)
 
   // Method to clean up bullets
   cleanup() {

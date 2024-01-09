@@ -60,7 +60,7 @@ export class Enemies extends Character {
     this.position.x = newX;
     this.position.y = newY;
     this.shipWrapper.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`;
-  }, 30);
+  }, 0);
   
 
 }
