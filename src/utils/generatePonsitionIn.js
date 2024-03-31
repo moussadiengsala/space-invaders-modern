@@ -1,9 +1,8 @@
 import { random } from "./radom.js";
 
-export function generatePositionIn(numOfEnemies, i) {
-  let y = ((innerHeight -100) * random(0, 40)) / 100;
-  let x = ((innerWidth - 100) * random(0, 100)) / 100;
+export function generatePositionIn(gameBoard, numOfEnemies, i) {
+    let y = random(0, innerHeight / 2);
+    let x = random(50, gameBoard.clientWidth - 50);
 
-  return { x, y };
+    return { x, y };
 }
-

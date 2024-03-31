@@ -42,16 +42,41 @@ body {
 
 #game-board {
     background-image: url(/assets/maps/background-blue.png);
-    width: 100vw;
+    width: 50rem;
     height: 100vh;
     overflow: hidden;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 .fps-display {
     color: white;
 }
+
+#test{
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+    transform: translate(0px, 0px);
+    -webkit-transform: translate(0px, 0px);
+    -moz-transform: translate(0px, 0px);
+    -ms-transform: translate(0px, 0px);
+    -o-transform: translate(0px, 0px);
+}
+
 image {
     transition: all;
 }
 
 
+@media (width <= 820px) {
+    #game-board {
+        width: 100vw; 
+    }
+}

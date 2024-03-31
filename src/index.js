@@ -1,24 +1,20 @@
-import { resources } from "./engine.js";
 
 
-// function mainMenu() {
-//     return `
-        
-//     `;
-// }
+const gameBoard = document.getElementById("game-board");
+const menuElement = document.getElementById("main-menu");
+const p = document.getElementById("pause-game");
+const g = document.getElementById("game-over");
+const planets = menuElement.querySelectorAll(".main-menu-planet");
 
-// // document.body.appendChild(mainMenu());
+export function navigation(resources) {
+    const accordionTogglers =
+        menuElement.querySelectorAll(".accordion-toggler");
+    const accordionContents =
+        menuElement.querySelectorAll(".accordion-content");
 
-function navigation() {
-    const accordionTogglers = document.body.querySelectorAll(".accordion-toggler");
-    const accordionContents = document.body.querySelectorAll(".accordion-content");
-
-    console.log(accordionTogglers);
     const toggleContent = (index) => {
-        // console.log("planet:")
         resources.audios.click.play();
         accordionContents[index].classList.toggle("active");
-
         accordionContents.forEach((content, i) => {
             if (i !== index) {
                 content.classList.remove("active");
@@ -31,6 +27,5 @@ function navigation() {
             toggleContent(index);
         });
     });
-    
 }
-navigation()
+

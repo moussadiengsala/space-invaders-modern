@@ -1,15 +1,17 @@
-export function debounce(func, delay, obj = {leading: false}) {
- 
-    let timeOutID;
-    return (...arg) => {
-        // if obj.leading is ture call the callback immediately don't it de maniere asynchronously.
-        if (obj.leading && !timeOutID) {
-            func(...arg);
-        }
-        clearTimeout(timeOutID);
-        // setimeout s'execute de maniere asynchrone even thought the delay is 0, your callback will execute in the background.
-        timeOutID = setTimeout( () => {
-            func(...arg)
-        }, delay)
-    }
-}
+// export function debounce(func, obj = { leading: false }) {
+//     let animationFrameID;
+  
+//     return (...args) => {
+//         // If obj.leading is true, call the callback immediately without waiting for the delay
+//         if (obj.leading && !animationFrameID) {
+//             func(...args);
+//         }
+
+//         cancelAnimationFrame(animationFrameID);
+
+//         // Call the function using requestAnimationFrame
+//         animationFrameID = requestAnimationFrame(() => {
+//             func(...args);
+//         });
+//     };
+// }

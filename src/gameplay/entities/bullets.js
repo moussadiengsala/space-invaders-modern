@@ -1,5 +1,6 @@
-
-import { throttle } from "../../utils/throttle.js";
+// Import necessary modules and classes
+import { spriteAnimation } from "../../utils/spriteAnimation.js";
+import { resources } from "../../engine.js";
 
 // Class definition for Bullets
 class Bullets {
@@ -21,8 +22,11 @@ class Bullets {
     this.animationState = projectileSprite
 
     // Initialize bullets with the specified projectile
-    this.createBulletElement(this.position)
-    
+    this.loadProjectile(this.position)
+
+    // song who goes with the fire
+    resources.audios.fire.volume = 0.1;
+    resources.audios.fire.play();
   }
 
   // Method to load a new gun for the bullets
@@ -33,10 +37,13 @@ class Bullets {
   }
 
   // Method to create bullets with a specific projectile
-  createBulletElement = (position) => {
+  loadProjectile = (position) => {
+  
+    // Create a new div element for the bullets
+    // Set bullets as a property of the Bullets class
     this.bullets = document.createElement("div");
     this.bullets.className = `bullet`
-    this.bullets.style.transform = `translate(${this.position.x}px,${this.position.y}px)`;
+    this.updatePosition()
 
     this.elem = document.createElement("div");
     this.elem.style.backgroundImage = `url(${this.projectile})`
@@ -47,7 +54,7 @@ class Bullets {
   }
 
   // Method to animate and update the position of bullets
-  fire = throttle((activeBullets, poolingBullets, index) => {
+  fire(activeBullets, poolingBullets, index) {
     // Animate bullets using spriteAnimation
     // spriteAnimation(this.bullets, this.animationState);
 
@@ -55,16 +62,20 @@ class Bullets {
     const isOutOfBoard = this.position.y > window.innerHeight || (this.position.y < 0);
 
     // If bullets are out of the board, clean up and remove them from the array
-    if (!isOutOfBoard) {
-      // Update the vertical position of bullets
-      this.position.y += 8 * this.direction;
-      this.bullets.style.transform = `translate(${this.position.x}px,${this.position.y}px)`;
-    } else {
+    if (isOutOfBoard) {
       this.cleanup()
       poolingBullets[activeBullets[index].ID] = activeBullets[index]
       activeBullets.splice(index, 1);
-    } 
-  }, 0)
+    }
+
+    // Update the vertical position of bullets
+    this.position.y += 8 * this.direction;
+    this.updatePosition()
+  }
+
+  updatePosition() {
+    this.bullets.style.transform = `translate(${this.position.x}px,${this.position.y}px)`;
+  }
 
   // Method to clean up bullets
   cleanup() {

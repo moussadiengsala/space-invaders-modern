@@ -1,4 +1,4 @@
-// ResourceManager.js
+
 export class ResourceManager {
     constructor() {
         this.images = {};
