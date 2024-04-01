@@ -1,4 +1,4 @@
-import { resources } from "../engine.js";
+import { Engine, resources } from "../engine.js";
 import { GamePlay } from "../gameplay/gameplay.js";
 import { socket } from "../server/socketEntrypoint.js";
 
@@ -32,6 +32,8 @@ export class Menu {
 
             document.getElementById("header").style.display = "block";
             this.isGameStarted = true;
+            let engine = new Engine();
+            engine.gameLoop();
             this.game.load();
         };
 
@@ -78,6 +80,8 @@ export class Menu {
 
         this.game.player.removeMoveHandler();
         this.g.style.display = "block";
+
+        
     }
 
     backgroundMusic() {

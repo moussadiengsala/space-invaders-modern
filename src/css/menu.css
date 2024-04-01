@@ -20,6 +20,7 @@
     justify-content: center;
     align-items: center;
     color: white;
+    z-index: 999
 }
 
 .accordion-toggler{
@@ -41,12 +42,13 @@
 }
 
 /* game-over space-y-3 flex flex-col justify-center items-center */
-.game-over {
+#game-over {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: .75rem;
+    z-index: 999
 }
 
 /* game-over-title md:text-[80px] homme-text text-center text-[#86AE94] */

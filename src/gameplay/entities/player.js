@@ -109,7 +109,6 @@ export class Player extends Character {
 
             this.actualGunTypes =
                 this.actualGunTypes == 0 ? 0 : this.actualGunTypes - 1;
-            console.log("toucher");
             this.actualGunTypes =
                 this.actualGunTypes % this.weapon.gunTypes.length;
             this.weapon.changedGun(this.actualGunTypes);

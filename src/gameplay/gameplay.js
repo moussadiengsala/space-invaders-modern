@@ -15,7 +15,7 @@ const DIRECTIONS = {
 // This class is designed to manage the gameplay and start a new game
 export class GamePlay {
     constructor() {
-        // Initialize properties for game state
+        this.maxLevel = 4;
         this.level = 1;
         this.score = 0;
         this.gameBoard = document.querySelector("#game-board");
@@ -125,7 +125,7 @@ export class GamePlay {
 
     // Method to render the game
     render = async () => {
-        this.update();
+        // this.update();
 
         // Handle bullet hits for the player
         this.player.handleBulletHit();
@@ -239,3 +239,5 @@ export class GamePlay {
         return value < 10 ? `0${value}` : value;
     }
 }
+
+// in web game to enhance the dom manupulation should i load all the necessery element before the game started i mean if my game 10 level each level have their number of enemies correspond to that number of level plus the player character should i load all the 1 + 2 + 3 + ... + 10 enemies + player before the game start

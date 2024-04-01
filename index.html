@@ -105,6 +105,10 @@
       <!-- game over -->
       <div id='game-over' style="display: none;">
         <h1 class="game-over-title homme-text">Game Over</h1>
+        <form id="submit-score" method="post">\
+          <input type="text" name="name">
+          <button type="submit">submit score</button>
+        </form>
         <div>
           <span>Your score : </span>
           <span class='game-over-score'></span>
@@ -117,6 +121,14 @@
 
     </div>
 
+    <div id="history">
+      <div class="history-content"></div>
+      <div>
+        <button>got it</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/index.js"></script>
     <script type="module" src="/src/engine.js"></script>
     
   </body>

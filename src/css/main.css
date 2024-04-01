@@ -33,6 +33,10 @@ body {
     align-items: center;
 }
 
+button, input[type="submit"], a {
+    cursor: pointer;
+}
+
 .homme-text {
     font-family: "Homme";
 }
@@ -54,6 +58,34 @@ body {
 .fps-display {
     color: white;
 }
+
+#history{
+    display: none;
+    position: absolute;
+    width: fit-content;
+    background-color: red;
+    padding: 1rem;
+    gap: 1rem;
+    flex-direction: column;
+    align-items: end;
+    border-radius: .3rem;
+    -webkit-border-radius: .3rem;
+    -moz-border-radius: .3rem;
+    -ms-border-radius: .3rem;
+    -o-border-radius: .3rem;
+}
+
+/* #submit-score{
+    display: none;
+    position: absolute;
+    width: fit-content;
+    background-color: red;
+    padding: 1rem;
+    gap: 1rem;
+    flex-direction: column;
+    align-items: end;
+    border-radius: .3rem;
+} */
 
 #test{
     width: 100px;

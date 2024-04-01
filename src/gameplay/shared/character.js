@@ -7,9 +7,7 @@ import {
 import Bullets from "../entities/bullets.js";
 import Weapon from "../entities/weapon.js";
 
-// Define the Character class
 export class Character {
-    // Constructor for creating instances of Character
     constructor(
         CharacterType,
         size,
@@ -25,7 +23,6 @@ export class Character {
         poolingEnemies,
         gameBoard
     ) {
-        // Initialize properties of the character
         this.CharacterType = CharacterType;
         this.ID = `${this.CharacterType}_${Date.now()}`;
         this.health = health;
@@ -38,17 +35,13 @@ export class Character {
         this.poolingBullets = poolingBullets;
         this.isAlive = true;
 
-        // enemies
         this.enemies = enemies;
         this.poolingEnemies = poolingEnemies;
 
-        // Set the rhythm at which enemies shoot
         this.spaceFire = spaceFire;
 
-        // Set the direction of bullets (up for player, down for enemy)
         this.directionBullets = directionBullets;
 
-        // Set exhaust type and create ship elements
         this.shipWrapper = document.createElement("div");
         this.ship = document.createElement("div");
         this.shipExhausts = document.createElement("div");
@@ -193,7 +186,6 @@ export class Character {
         return isPlayerHitEnemy;
     };
 
-    // Method to render the characterthis.shipWrapper.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`;
     render = async () => {
         // spriteAnimation(this.shipExhausts, this.animationState)
         this.stageToFire += 10;

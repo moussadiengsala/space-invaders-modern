@@ -53,25 +53,20 @@ export class Enemies extends Character {
         this.amplitude = 20;
         this.frequency = 0.1;
 
-        // Pre-calculate offset values
         this.offsetX = this.gameBoard.clientWidth - this.size;
         this.offsetY = innerHeight - 4 * this.size;
     }
 
-    // Method for rollercoaster-like movement of enemies
     move = () => {
-        // Calculate movement in x and y directions based on sine function
-        const x = (50 / this.numPoints) * this.directionX; // Spread the points evenly on the x-axis
+        const x = (50 / this.numPoints) * this.directionX; 
         const y =
             this.amplitude *
             Math.sin((this.frequency * Math.PI) / this.numPoints) *
             this.directionY;
 
-        // Calculate the potential new position
         let newX = this.position.x + x;
         let newY = this.position.y + y;
 
-        // Check and adjust if the new position goes beyond the board boundaries
         if (newX <= 0 || newX >= this.offsetX) {
             this.directionX *= -1;
         }
@@ -80,12 +75,8 @@ export class Enemies extends Character {
             this.directionY *= -1;
         }
 
-        // Update the position of the enemy
         this.position.x = newX;
         this.position.y = newY;
         this.shipWrapper.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`;
-
-        // Request next animation frame
-        // requestAnimationFrame(this.move);
     };
 }
