@@ -106,7 +106,6 @@ export class Character {
         this.gameBoard.appendChild(this.shipWrapper);
     }
 
-    // Method to handle damage to the character
     takeDamage() {
         this.health -= this.weapon.demage;
         this.healthBar.style.width = `${this.health}%`;
@@ -144,13 +143,12 @@ export class Character {
         this.updateTexture();
     }
 
-    // Method to update the character's texture based on health
     updateTexture() {
         let newTexture;
         for (const damageThreshold in this.texture) {
             if (this.health <= damageThreshold) {
                 newTexture = this.texture[damageThreshold].src;
-                break; // Stop once the first matching threshold is found
+                break;
             }
         }
 
@@ -187,7 +185,6 @@ export class Character {
     };
 
     render = async () => {
-        // spriteAnimation(this.shipExhausts, this.animationState)
         this.stageToFire += 10;
         if (this.stageToFire >= this.spaceFire) {
             this.stageToFire = 0;
@@ -195,15 +192,12 @@ export class Character {
         }
     };
 
-    // Method to make the character fire bullets
     fire = async () => {
-        // initial coordinates of bullet.
         let x = this.position.x + (this.size - 32) / 2;
         let y = this.CharacterType.includes("Enemy")
             ? this.position.y + this.size
             : this.position.y;
 
-        // the number of bullet per fire depends on the type of weapon
         await Promise.all(
             this.weapon.adjustPosition.map(async (adjustPosition, i) => {
                 x += adjustPosition;
@@ -236,13 +230,9 @@ export class Character {
                 }
             })
         );
-
-        // if (this.CharacterType == "Enemy") console.log(this.activeBullets.filter(b => b.BulletOwner == "Enemy"));
     };
 
-    // Method to perform cleanup when the character is no longer active
     cleanup() {
-        // if (this.gameBoard.contains(this.shipWrapper)) this.gameBoard.removeChild(this.shipWrapper);
         this.shipWrapper.style.opacity = 0;
     }
 }

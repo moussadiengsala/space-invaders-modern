@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,8 +17,11 @@ func HandlePostScore(w http.ResponseWriter, r *http.Request) {
 	}
 
 	player := Player{}
-	player.Name = r.FormValue("name")
-	player.Score, _ = strconv.Atoi(r.FormValue("score"))
+	if err := json.NewDecoder(r.Body).Decode(&player); err != nil {
+		FormateResponse(&response, nil, http.StatusBadRequest, err.Error())
+		ResponseWriter(w, response)
+		return
+	}
 
 	// if isValid, err := ValidateNameScore(player.Name, player.Score); !isValid {
 

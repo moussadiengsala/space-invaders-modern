@@ -48,7 +48,6 @@
     justify-content: center;
     align-items: center;
     gap: .75rem;
-    z-index: 999
 }
 
 /* game-over-title md:text-[80px] homme-text text-center text-[#86AE94] */
@@ -77,6 +76,7 @@
     position: absolute;
     color: white;
     font-family: "Homme";
+    z-index: 999;
 }
 
 /* main-menu-title md:text-[80px] text-center text-[#86AE94] */
@@ -168,6 +168,7 @@
     width: 100%;
     padding: 2rem;
     font-size: 1rem;
+    z-index: 999;
 
 }
 

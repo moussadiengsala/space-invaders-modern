@@ -2,17 +2,14 @@ import { Enemies } from "./entities/enemies.js";
 import { Player } from "./entities/player.js";
 import { generatePositionIn } from "../utils/generatePonsitionIn.js";
 import { random } from "../utils/radom.js";
-import { isElementCollide } from "../utils/collision.js";
 import { resources } from "../engine.js";
 import { throttle } from "../utils/throttle.js";
 
-// Define directions for movement
 const DIRECTIONS = {
     UP: -1,
     DOWN: 1,
 };
 
-// This class is designed to manage the gameplay and start a new game
 export class GamePlay {
     constructor() {
         this.maxLevel = 4;
@@ -24,11 +21,9 @@ export class GamePlay {
             y: this.gameBoard.clientHeight - 200,
         };
 
-        // bullets
         this.activeBullets = [];
         this.poolingBullets = {};
 
-        // Set the number of enemies and initialize an empty array for enemies
         this.numberOfEnemies = 1;
         this.enemies = [];
         this.poolingEnemies = {};
@@ -37,12 +32,9 @@ export class GamePlay {
         this.countdownTime = 1;
     }
 
-    // Method to load the game
     async load() {
-        // Cleanup existing game state
         await this.cleanup();
 
-        // Create a new player instance and load its texture
         this.player = new Player(
             "Player",
             100,
@@ -60,16 +52,12 @@ export class GamePlay {
         this.player.loadTexture();
         this.player.moveHandler();
 
-        // Load enemies for the new game
         this.loadEnemies();
     }
 
-    // Method to cleanup game state
     cleanup = async () => {
-        // Clean up player, enemies, bullets, and reset score
         this.player?.cleanup();
 
-        // Clean up enemies asynchronously
         Promise.all(
             this.enemies.map(async (enemy) => {
                 this.poolingEnemies[enemy.ID] = enemy;
@@ -78,7 +66,6 @@ export class GamePlay {
         );
         this.enemies = [];
 
-        // Clean up bullets asynchronously
         Promise.all(
             this.activeBullets.map(async (bullet) => {
                 this.poolingBullets[bullet.ID] = bullet;
@@ -99,7 +86,6 @@ export class GamePlay {
         document.querySelector(".timer").textContent = "00:00";
     };
 
-    // Method to load enemies
     async loadEnemies() {
         const enemies = Array.from(
             { length: this.numberOfEnemies },
@@ -162,6 +148,10 @@ export class GamePlay {
     // If all enemies are defeated, load a new set of enemies
     async setUpNewLevel() {
         if (this.enemies.length === 0) {
+            if (this.level == this.maxLevel) {
+                this.player.isAlive = false;
+                return;
+            }
             this.level += 1;
             document.querySelector(".level").textContent = this.level;
 

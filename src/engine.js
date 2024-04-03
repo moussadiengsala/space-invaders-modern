@@ -1,5 +1,5 @@
 import { skyAnimation } from "./ui/skyAnimation.js";
-import { ResourceManager } from "./ui/resourceManager.js";
+import { ResourceManager } from "./resourceManager.js";
 import { navigation } from "./index.js";
 import { GamePlay } from "./gameplay/gameplay.js";
 import { history } from "./utils/history.js";
@@ -25,63 +25,63 @@ export class Menu {
         this.history = document.getElementById("history");
         this.stageHistory = null;
 
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleMenu = this.handleMenu.bind(this);
+        this.gameLoop = this.gameLoop.bind(this);
+        this.initialize();
+    }
+
+    initialize() {
         window.addEventListener("keydown", this.handleKeyDown);
         this.handlePlanet();
         this.backgroundMusic();
+        this.handleSubmit();
+        this.handleMenu();
     }
 
     handlePlanet() {
         this.planets = this.menuElement.querySelectorAll(".main-menu-planet");
-        const handleClick = (event) => {
-            const planet = event.target;
-            const map = planet.getAttribute("data-map");
-
-            this.game.gameBoard.style.backgroundImage = `url(${resources.images.map[map].src})`;
-            this.menuElement.classList.add("main-menu-hidden");
-
-            document.getElementById("header").style.display = "block";
-
-            this.isGameStarted = true;
-            this.game.load();
-            this.gameLoop();
-            this.handleHistory("intorduction");
-        };
-
         this.planets.forEach((planet) => {
-            planet.addEventListener("click", handleClick);
+            planet.addEventListener("click", this.handlePlanetClick.bind(this));
         });
     }
 
-    handleKeyDown = (e) => {
+    handlePlanetClick(event) {
+        const planet = event.target;
+        const map = planet.getAttribute("data-map");
+        this.game.gameBoard.style.backgroundImage = `url(${resources.images.map[map].src})`;
+        this.menuElement.classList.add("main-menu-hidden");
+        document.getElementById("header").style.display = "block";
+        this.handleHistory("intorduction");
+        this.isGameStarted = true;
+        this.game.load();
+        this.gameLoop();
+    }
+
+    handleKeyDown(e) {
         if (e.key.toLowerCase() == "p" && this.isGameStarted) {
-            this.isPaused = !this.isPaused;
-            this.game.isRunning = !this.game.isRunning;
-            if (this.isPaused) {
-                this.p.style.display = "block";
-                this.handleMenu();
-                this.game.player.removeMoveHandler();
-            } else {
-                this.game.player.moveHandler();
-                this.p.style.display = "none";
-            }
+            this.togglePause();
         }
-    };
+    }
+
+    togglePause() {
+        this.isPaused = !this.isPaused;
+        this.game.isRunning = !this.game.isRunning;
+        this.p.style.display = this.isPaused ? "block" : "none";
+        if (this.isPaused) {
+            this.game.player.removeMoveHandler();
+        } else {
+            this.game.player.moveHandler();
+        }
+    }
 
     async Start() {
         if (
-            this.game.level === this.game.maxLevel / 2 &&
+            this.game.level === this.game.maxLevel / 2 + 1 &&
             this.stageHistory != "development"
         ) {
-            this.game.player.isAlive = false;
             this.stageHistory = "development";
-            this.handleHistory(this.stageHistory);
-        }
-
-        if (
-            this.game.level === this.game.maxLevel &&
-            this.stageHistory != "conclusion"
-        ) {
-            this.stageHistory = "conclusion";
             this.handleHistory(this.stageHistory);
         }
 
@@ -89,7 +89,6 @@ export class Menu {
             if (!this.game.player.isAlive) {
                 this.isPaused = true;
                 this.GameOver();
-                this.handleMenu();
             }
             this.game.render();
         }
@@ -104,10 +103,7 @@ export class Menu {
 
         this.history.querySelector("button").addEventListener("click", () => {
             this.history.style.display = "none";
-            if (this.stageHistory == "conclusion") {
-                this.GameOver();
-                this.handleMenu();
-            } else {
+            if (this.step != "conclusion") {
                 this.isPaused = false;
                 this.game.player.moveHandler();
             }
@@ -115,6 +111,7 @@ export class Menu {
     }
 
     GameOver() {
+        this.handleHistory("conclusion");
         let backgroundMusic = resources.audios.gameOver;
         window.removeEventListener("keydown", this.handleKeyDown);
 
@@ -124,22 +121,27 @@ export class Menu {
 
         this.game.player.removeMoveHandler();
         this.g.style.display = "block";
+    }
 
+    handleSubmit() {
         const s = document.getElementById("submit-score");
         s.addEventListener("submit", async (e) => {
             e.preventDefault();
+
             let formData = new FormData(e.target);
-            formData.append("score", this.game.score);
 
-            let response = await fetch("http://localhost:8080/post-score", {
+            fetch("http://localhost:8080/post-score", {
                 method: "POST",
-                body: formData, 
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            let data = await response.json();
+                // headers: {
+                //     "Content-Type": "application/json",
+                // },
+                body: JSON.stringify({
+                    score: this.game.score,
+                    name: formData.get("name"),
+                }),
+            })
+                .then((response) => response.json())
+                .catch((error) => console.error("Error:", error));
         });
     }
 
@@ -160,23 +162,10 @@ export class Menu {
             button.addEventListener("click", () => {
                 switch (action) {
                     case "restart":
-                        this.isPaused = false;
-                        this.p.style.display = "none";
-                        this.g.style.display = "none";
-                        window.addEventListener("keydown", this.handleKeyDown);
-                        this.game.player.moveHandler();
-                        this.game.load();
+                        this.restartGame();
                         break;
                     case "continue":
-                        this.isPaused = !this.isPaused;
-                        this.game.isRunning = !this.game.isRunning;
-                        if (this.isPaused) {
-                            this.game.player.removeMoveHandler();
-                        } else {
-                            this.game.player.moveHandler();
-                            this.p.style.display = "none";
-                            this.g.style.display = "none";
-                        }
+                        this.togglePause();
                         break;
                     case "quit":
                         location.reload();
@@ -184,6 +173,15 @@ export class Menu {
                 }
             });
         });
+    }
+
+    restartGame() {
+        this.isPaused = false;
+        this.p.style.display = "none";
+        this.g.style.display = "none";
+        window.addEventListener("keydown", this.handleKeyDown);
+        this.game.player.moveHandler();
+        this.game.load();
     }
 
     gameLoop() {
