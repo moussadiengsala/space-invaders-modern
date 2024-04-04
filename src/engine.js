@@ -50,10 +50,10 @@ export class Menu {
     handlePlanetClick(event) {
         const planet = event.target;
         const map = planet.getAttribute("data-map");
-        this.game.gameBoard.style.backgroundImage = `url(${resources.images.map[map].src})`;
+        resources.gameBoard.style.backgroundImage = `url(${resources.images.map[map].src})`;
         this.menuElement.classList.add("main-menu-hidden");
         document.getElementById("header").style.display = "block";
-        this.handleHistory("intorduction");
+        // this.handleHistory("intorduction");
         this.isGameStarted = true;
         this.game.load();
         this.gameLoop();
@@ -70,23 +70,23 @@ export class Menu {
         this.game.isRunning = !this.game.isRunning;
         this.p.style.display = this.isPaused ? "block" : "none";
         if (this.isPaused) {
-            this.game.player.removeMoveHandler();
+            resources.player.removeMoveHandler();
         } else {
-            this.game.player.moveHandler();
+            resources.player.moveHandler();
         }
     }
 
     async Start() {
-        if (
-            this.game.level === this.game.maxLevel / 2 + 1 &&
-            this.stageHistory != "development"
-        ) {
-            this.stageHistory = "development";
-            this.handleHistory(this.stageHistory);
-        }
+        // if (
+        //     this.game.level === this.game.maxLevel / 2 + 1 &&
+        //     this.stageHistory != "development"
+        // ) {
+        //     this.stageHistory = "development";
+        //     this.handleHistory(this.stageHistory);
+        // }
 
         if (this.isGameStarted && !this.isPaused) {
-            if (!this.game.player.isAlive) {
+            if (!resources.player.isAlive) {
                 this.isPaused = true;
                 this.GameOver();
             }
@@ -99,19 +99,19 @@ export class Menu {
         const content = history[step];
         this.history.querySelector(".history-content").textContent = content;
         this.history.style.display = "flex";
-        if (this.game.player) this.game.player.removeMoveHandler();
+        resources.player.removeMoveHandler();
 
         this.history.querySelector("button").addEventListener("click", () => {
             this.history.style.display = "none";
             if (this.step != "conclusion") {
                 this.isPaused = false;
-                this.game.player.moveHandler();
+                resources.player.moveHandler();
             }
         });
     }
 
     GameOver() {
-        this.handleHistory("conclusion");
+        // this.handleHistory("conclusion");
         let backgroundMusic = resources.audios.gameOver;
         window.removeEventListener("keydown", this.handleKeyDown);
 
@@ -119,7 +119,7 @@ export class Menu {
         backgroundMusic.volume = 0.5;
         backgroundMusic.play();
 
-        this.game.player.removeMoveHandler();
+        resources.player.removeMoveHandler();
         this.g.style.display = "block";
     }
 
@@ -180,7 +180,7 @@ export class Menu {
         this.p.style.display = "none";
         this.g.style.display = "none";
         window.addEventListener("keydown", this.handleKeyDown);
-        this.game.player.moveHandler();
+        resources.player.moveHandler();
         this.game.load();
     }
 
@@ -196,7 +196,7 @@ export class Menu {
 
     render() {
         // skyAnimation(this.map);
-        if (this.game.player) this.Start();
+        this.Start();
     }
 }
 

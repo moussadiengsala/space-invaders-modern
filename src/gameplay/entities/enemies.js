@@ -13,11 +13,8 @@ export class Enemies extends Character {
         position,
         spaceFire,
         directionBullets,
-        activeBullets,
-        poolingBullets,
-        enemies,
-        poolingEnemies,
-        gameBoard
+        gameBoard,
+        r
     ) {
         // text of enemies
         const texture = resources.images.enemie[`${random(1, 2)}`];
@@ -32,11 +29,8 @@ export class Enemies extends Character {
             texture,
             spaceFire,
             directionBullets,
-            activeBullets,
-            poolingBullets,
-            enemies,
-            poolingEnemies,
-            gameBoard
+            gameBoard,
+            r
         );
 
         // Set direction and speed for enemy movement
@@ -55,10 +49,16 @@ export class Enemies extends Character {
 
         this.offsetX = this.gameBoard.clientWidth - this.size;
         this.offsetY = innerHeight - 4 * this.size;
+
+        this.spaceMove = 1000;
+        this.stageToMove = 0;
     }
 
     move = () => {
-        const x = (50 / this.numPoints) * this.directionX; 
+        this.stageToMove += 500;
+        if (this.stageToMove < this.spaceMove) return;
+        this.stageToMove = 0;
+        const x = (50 / this.numPoints) * this.directionX;
         const y =
             this.amplitude *
             Math.sin((this.frequency * Math.PI) / this.numPoints) *

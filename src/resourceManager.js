@@ -1,8 +1,69 @@
+import Bullets from "./gameplay/entities/bullets.js";
+import { Enemies } from "./gameplay/entities/enemies.js";
+import { Player } from "./gameplay/entities/player.js";
 
 export class ResourceManager {
     constructor() {
         this.images = {};
         this.audios = {};
+        this.gameBoard = document.querySelector("#game-board");
+
+        this.sizeOfBullets = 50;
+        this.activeBullets = [];
+        this.poolingBullets = {};
+
+        this.sizeOfEnemies = 4;
+        this.enemies = [];
+        this.poolingEnemies = {};
+    }
+
+    async load() {
+        this.player = new Player(
+            "Player",   
+            100,
+            100,
+            30,
+            {},
+            500,
+            -1,
+            this.gameBoard,
+            this
+        );
+        this.player.loadTexture();
+
+        // set the pooling enemies
+        for (let i = 0; i < this.sizeOfEnemies; i++) {
+            const enemy = new Enemies(
+                "Enemy",
+                100,
+                100,
+                10,
+                {},
+                0,
+                1,
+                this.gameBoard,
+                this
+            );
+
+            enemy.ID += i;
+
+            enemy.loadTexture();
+            this.poolingEnemies[enemy.ID] = enemy;
+        }
+
+        for (let i = 0; i < this.sizeOfBullets; i++) {
+            let bullet = new Bullets(
+                this.CharacterType,
+                0,
+                0,
+                1,
+                null,
+                null,
+                this.gameBoard
+            );
+            bullet.ID += i;
+            this.poolingBullets[bullet.ID] = bullet;
+        }
     }
 
     loadImage(key, url) {
@@ -54,8 +115,8 @@ export class ResourceManager {
         return currentObj;
     }
 
-    resourceLoader() {
-        return Promise.all([
+    async resourceLoader() {
+        await Promise.all([
             // player textures
             this.loadImage(
                 "player.100",
@@ -194,5 +255,6 @@ export class ResourceManager {
                 "../../../assets/audio/explosion-nearby-gamemaster-audio-1-00-01.mp3"
             ),
         ]);
+        this.load()
     }
 }

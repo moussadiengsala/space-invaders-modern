@@ -4,7 +4,6 @@ import {
     spriteAnimation,
     spriteAutoAnimation,
 } from "../../utils/spriteAnimation.js";
-import Bullets from "../entities/bullets.js";
 import Weapon from "../entities/weapon.js";
 
 export class Character {
@@ -17,12 +16,10 @@ export class Character {
         texture,
         spaceFire,
         directionBullets,
-        activeBullets,
-        poolingBullets,
-        enemies,
-        poolingEnemies,
-        gameBoard
+        gameBoard,
+        r
     ) {
+        this.r = r;
         this.CharacterType = CharacterType;
         this.ID = `${this.CharacterType}_${Date.now()}`;
         this.health = health;
@@ -31,43 +28,21 @@ export class Character {
         this.position = position;
         this.texture = texture;
         this.gameBoard = gameBoard;
-        this.activeBullets = activeBullets;
-        this.poolingBullets = poolingBullets;
         this.isAlive = true;
-
-        this.enemies = enemies;
-        this.poolingEnemies = poolingEnemies;
 
         this.spaceFire = spaceFire;
 
         this.directionBullets = directionBullets;
 
         this.shipWrapper = document.createElement("div");
+        this.shipWrapper.className = "ship-wrapper";
         this.ship = document.createElement("div");
         this.shipExhausts = document.createElement("div");
 
         this.stageToFire = 0;
-
-        // Exhaust texture
-        this.animationState = {
-            currentFrame: 0,
-            frameCount: 4,
-            currentRow: 0,
-            row: 1,
-        };
     }
 
-    // Method to load the texture of the character
     loadTexture() {
-        Object.assign(this.shipWrapper.style, {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: `${this.size}px`,
-            height: `${this.size}px`,
-            transform: `translate(${this.position.x}px, ${this.position.y}px)`,
-        });
-
         let elem = document.createElement("div");
         elem.className = `ship-wrapper-elem ${
             this.CharacterType.includes("Enemy")
@@ -75,15 +50,13 @@ export class Character {
                 : "ship-wrapper-player"
         }`;
 
-        // exhauste
         let exhaustEngine = document.createElement("div");
         exhaustEngine.className = `exhaust exhaust-engine`;
-        exhaustEngine.style.backgroundImage = `url(${resources.images.exhaust.engine.src})`;
+        exhaustEngine.style.backgroundImage = `url(${this.r.images.exhaust.engine.src})`;
 
         this.shipExhausts.className = `exhaust exhaust-ship`;
-        this.shipExhausts.style.backgroundImage = `url(${resources.images.exhaust.exhaust.src})`;
+        this.shipExhausts.style.backgroundImage = `url(${this.r.images.exhaust.exhaust.src})`;
 
-        // Create a weapon for the character
         this.weapon = new Weapon(0, elem);
 
         this.ship.style.backgroundImage = `url(${
@@ -106,6 +79,12 @@ export class Character {
         this.gameBoard.appendChild(this.shipWrapper);
     }
 
+    updatePosition() {
+        Object.assign(this.shipWrapper.style, {
+            transform: `translate(${this.position.x}px, ${this.position.y}px)`,
+        });
+    }
+
     takeDamage() {
         this.health -= this.weapon.demage;
         this.healthBar.style.width = `${this.health}%`;
@@ -117,17 +96,17 @@ export class Character {
 
         if (this.health <= 0) {
             if (this.CharacterType === "Enemy") {
-                let explosionSoundEffect = resources.audios.explosion;
+                let explosionSoundEffect = this.r.audios.explosion;
                 explosionSoundEffect.play();
                 explosionSoundEffect.volume = 0.1;
                 spriteAutoAnimation(this.ship, 64, 9, 100, () => {
                     this.isAlive = false;
-                    let index = this.enemies.indexOf(this);
+                    let index = resources.enemies.indexOf(this);
 
-                    this.poolingEnemies[this.enemies[index].ID] =
-                        this.enemies[index];
+                    resources.poolingEnemies[resources.enemies[index].ID] =
+                        resources.enemies[index];
 
-                    this.enemies.splice(index, 1);
+                    resources.enemies.splice(index, 1);
                     this.cleanup();
                 });
             } else {
@@ -157,28 +136,28 @@ export class Character {
 
     handleBulletHit = () => {
         let isPlayerHitEnemy = false;
-        let bulletsOpponents = this.activeBullets.filter(
+        let bulletsOpponents = resources.activeBullets.filter(
             (bullet) => !bullet.BulletOwner.includes(this.CharacterType)
         );
         for (let bulletOpponents of bulletsOpponents) {
-            let index = this.activeBullets.indexOf(bulletOpponents);
-            this.activeBullets[index].isHitTarget = isElementCollide(
+            let index = resources.activeBullets.indexOf(bulletOpponents);
+            resources.activeBullets[index].isHitTarget = isElementCollide(
                 this,
-                this.activeBullets[index]
+                resources.activeBullets[index]
             );
             if (
-                this.activeBullets[index].isHitTarget &&
-                this.activeBullets[index].BulletOwner === "Player"
+                resources.activeBullets[index].isHitTarget &&
+                resources.activeBullets[index].BulletOwner === "Player"
             ) {
                 isPlayerHitEnemy = true;
             }
-            if (this.activeBullets[index].isHitTarget && this.health > 0) {
+            if (resources.activeBullets[index].isHitTarget && this.health > 0) {
                 this.takeDamage();
-                this.poolingBullets[this.activeBullets[index].ID] =
-                    this.activeBullets[index];
-                // Clean up the bullets after hitting the target.
-                this.activeBullets[index].cleanup();
-                this.activeBullets.splice(index, 1);
+                resources.poolingBullets[resources.activeBullets[index].ID] =
+                    resources.activeBullets[index];
+
+                resources.activeBullets[index].cleanup();
+                resources.activeBullets.splice(index, 1);
             }
         }
         return isPlayerHitEnemy;
@@ -202,32 +181,20 @@ export class Character {
             this.weapon.adjustPosition.map(async (adjustPosition, i) => {
                 x += adjustPosition;
 
-                let polling = Object.entries(this.poolingBullets);
-                if (polling.length > 0) {
-                    let [id, bullet] = polling.at(0);
-                    delete this.poolingBullets[id];
+                let polling = Object.entries(resources.poolingBullets);
+                console.log(polling);
 
-                    bullet.bullets.style.opacity = 1;
-                    bullet.BulletOwner = this.CharacterType;
-                    bullet.position = { x, y };
-                    bullet.direction = this.directionBullets;
-                    bullet.isHitTarget = false;
-                    bullet.elem.style.backgroundImage = `url(${this.weapon.projectile})`;
+                let [id, bullet] = polling.at(0);
+                delete resources.poolingBullets[id];
 
-                    this.activeBullets.push(bullet);
-                } else {
-                    let bullet = new Bullets(
-                        this.CharacterType,
-                        x,
-                        y,
-                        this.directionBullets,
-                        this.weapon.projectile,
-                        this.weapon.animationStateProjectile,
-                        this.gameBoard
-                    );
-                    bullet.ID += i;
-                    this.activeBullets.push(bullet);
-                }
+                bullet.bullets.style.opacity = 1;
+                bullet.BulletOwner = this.CharacterType;
+                bullet.position = { x, y };
+                bullet.direction = this.directionBullets;
+                bullet.isHitTarget = false;
+                bullet.elem.style.backgroundImage = `url(${this.weapon.projectile})`;
+
+                resources.activeBullets.push(bullet);
             })
         );
     };

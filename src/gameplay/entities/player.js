@@ -10,11 +10,8 @@ export class Player extends Character {
         position,
         spaceFire,
         directionBullets,
-        activeBullets,
-        poolingBullets,
-        enemies,
-        poolingEnemies,
-        gameBoard
+        gameBoard,
+        r
     ) {
         // the texture is now an object where keys represent diffrent state of health and values represent texture on that state of health
         const texture = resources.images.player;
@@ -28,11 +25,8 @@ export class Player extends Character {
             texture,
             spaceFire,
             directionBullets,
-            activeBullets,
-            poolingBullets,
-            enemies,
-            poolingEnemies,
-            gameBoard
+            gameBoard,
+            r
         );
 
         this.movebyKeyBoard = this.movebyKeyBoard.bind(this);

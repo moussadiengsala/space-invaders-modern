@@ -5,6 +5,11 @@
 /* `ship-wrapper absolute w-[${this.size}px] h-[${this.size}px]` */
 .ship-wrapper {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    opacity: 0;
 }
 
 .ship-wrapper-elem {
