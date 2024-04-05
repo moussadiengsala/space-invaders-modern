@@ -22,6 +22,7 @@ export class GamePlay {
         };
 
         this.numberOfEnemies = 1;
+        this.isGameStarted = false;
 
         this.isRunning = true;
         this.countdownTime = 1;
@@ -36,6 +37,7 @@ export class GamePlay {
         resources.player.moveHandler();
 
         this.loadEnemies();
+        this.isGameStarted = true;
     }
 
     cleanup = async () => {
@@ -102,8 +104,6 @@ export class GamePlay {
                 if (enemy.handleBulletHit()) {
                     this.score += 100;
                     document.querySelector(".score").textContent = this.score;
-                    
-                    this.setUpNewLevel();
                 }
 
                 await enemy.render();
@@ -119,11 +119,11 @@ export class GamePlay {
                 );
             })
         );
+        this.setUpNewLevel();
     };
 
     async setUpNewLevel() {
-        console.log('setUpNewLevel', resources.enemies);
-        if (resources.enemies.length === 0) {
+        if (resources.enemies.length === 0 && this.isGameStarted) {
             if (this.level == this.maxLevel) {
                 resources.player.isAlive = false;
                 return;
