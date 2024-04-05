@@ -182,7 +182,6 @@ export class Character {
                 x += adjustPosition;
 
                 let polling = Object.entries(resources.poolingBullets);
-                console.log(polling);
 
                 let [id, bullet] = polling.at(0);
                 delete resources.poolingBullets[id];

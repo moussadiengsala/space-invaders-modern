@@ -100,9 +100,10 @@ export class GamePlay {
                 enemy.move(20, 20, 0.1);
 
                 if (enemy.handleBulletHit()) {
-                    this.setUpNewLevel();
                     this.score += 100;
                     document.querySelector(".score").textContent = this.score;
+                    
+                    this.setUpNewLevel();
                 }
 
                 await enemy.render();
@@ -121,6 +122,7 @@ export class GamePlay {
     };
 
     async setUpNewLevel() {
+        console.log('setUpNewLevel', resources.enemies);
         if (resources.enemies.length === 0) {
             if (this.level == this.maxLevel) {
                 resources.player.isAlive = false;

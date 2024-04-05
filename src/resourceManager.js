@@ -39,7 +39,7 @@ export class ResourceManager {
                 100,
                 10,
                 {},
-                0,
+                1000,
                 1,
                 this.gameBoard,
                 this
